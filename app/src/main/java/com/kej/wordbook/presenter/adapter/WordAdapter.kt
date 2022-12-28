@@ -1,9 +1,9 @@
-package com.kej.wordbook
+package com.kej.wordbook.presenter.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.kej.wordbook.database.Word
+import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ItemWordBinding
 
 class WordAdapter(var list: MutableList<Word>, private val onClick: (Word) -> Unit): RecyclerView.Adapter<WordAdapter.WordViewHolder>() {

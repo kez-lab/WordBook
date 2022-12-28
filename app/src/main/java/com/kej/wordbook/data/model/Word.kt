@@ -1,4 +1,4 @@
-package com.kej.wordbook.database
+package com.kej.wordbook.data.model
 
 import android.os.Parcelable
 import androidx.room.Entity

@@ -1,8 +1,9 @@
-package com.kej.wordbook
+package com.kej.wordbook.presenter.add
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
@@ -10,8 +11,8 @@ import com.google.android.material.chip.Chip
 import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
 import com.kej.wordbook.LibContents.WORLD
-import com.kej.wordbook.database.AppDatabase
-import com.kej.wordbook.database.Word
+import com.kej.wordbook.R
+import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityAddBinding
 
 class AddActivity : AppCompatActivity() {
@@ -19,6 +20,7 @@ class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
     private var editWord: Word? = null
     private var isEdit = false
+    private val viewModel by viewModels<AddViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,29 +85,20 @@ class AddActivity : AppCompatActivity() {
         }
         val type = findViewById<Chip>(checkId).text.toString()
 
-        Thread {
-            if (!isEdit) {
-                val word = Word(text, mean, type)
-                AppDatabase.getInstance(this)?.wordDao()?.insert(word)
-                runOnUiThread {
-                    Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_SHORT).show()
-                }
-                val intent = Intent().putExtra(IS_UPDATE, true)
+        if (!isEdit) {
+            val word = Word(text, mean, type)
+            viewModel.insertData(word)
+            val intent = Intent().putExtra(IS_UPDATE, true)
+            setResult(RESULT_OK, intent)
+            finish()
+        } else {
+            editWord?.id?.let { Word(text, mean, type, it) }?.let { word ->
+                viewModel.updateData(word)
+                val intent = Intent().putExtra(EDIT_WORLD, word)
                 setResult(RESULT_OK, intent)
                 finish()
-            } else {
-                editWord?.id?.let { Word(text, mean, type, it) }?.let { word ->
-                    AppDatabase.getInstance(this)?.wordDao()?.update(word)
-                    runOnUiThread {
-                        Toast.makeText(this, getString(R.string.save_success), Toast.LENGTH_SHORT).show()
-                    }
-                    val intent = Intent().putExtra(EDIT_WORLD, word)
-                    setResult(RESULT_OK, intent)
-                    finish()
-                } ?: Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
-
-            }
-        }.start()
+            } ?: Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun checkValue(text: String, mean: String, checkId: Int): Boolean {

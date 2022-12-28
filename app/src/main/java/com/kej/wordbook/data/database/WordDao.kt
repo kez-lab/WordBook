@@ -1,6 +1,7 @@
-package com.kej.wordbook.database
+package com.kej.wordbook.data.database
 
 import androidx.room.*
+import com.kej.wordbook.data.model.Word
 
 @Dao
 interface WordDao {

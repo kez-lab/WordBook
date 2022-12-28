@@ -1,4 +1,4 @@
-package com.kej.wordbook
+package com.kej.wordbook.presenter.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
 import com.kej.wordbook.LibContents.WORLD
-import com.kej.wordbook.database.AppDatabase
-import com.kej.wordbook.database.Word
+import com.kej.wordbook.R
+import com.kej.wordbook.presenter.adapter.WordAdapter
+import com.kej.wordbook.presenter.add.AddActivity
+import com.kej.wordbook.data.database.AppDatabase
+import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
