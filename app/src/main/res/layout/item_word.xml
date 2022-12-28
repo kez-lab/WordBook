@@ -10,8 +10,10 @@
         android:id="@+id/textTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="24dp"
         tools:text ="단어"
+        android:textColor="@color/black"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,7 +21,7 @@
         android:id="@+id/meanTextTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="18dp"
         tools:text ="뜻"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="@id/textTextView"
