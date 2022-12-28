@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="단어" />
+        android:text="단어" />
 
     <TextView
         android:id="@+id/meanTextView"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="@+id/textTextView"
         app:layout_constraintStart_toStartOf="@+id/textTextView"
         app:layout_constraintTop_toBottomOf="@+id/textTextView"
-        tools:text="뜻" />
+        android:text="뜻" />
 
     <TextView
         android:id="@+id/typeTextView"
@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="@+id/meanTextView"
         app:layout_constraintStart_toStartOf="@+id/meanTextView"
         app:layout_constraintTop_toBottomOf="@+id/meanTextView"
-        tools:text="품사" />
+        android:text="품사" />
 
     <View
         android:id="@+id/line"
@@ -65,6 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/ic_baseline_delete_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/barrier"
@@ -95,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:src="@drawable/ic_baseline_add_24"
-        app:backgroundTint="#00FF22"
+        app:backgroundTint="@color/title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
