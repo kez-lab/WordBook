@@ -13,8 +13,4 @@ class Application: Application() {
         super.onCreate()
         database = AppDatabase.getInstance(this)
     }
-
-
-
-
 }
