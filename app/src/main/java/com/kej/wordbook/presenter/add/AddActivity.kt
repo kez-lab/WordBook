@@ -14,7 +14,9 @@ import com.kej.wordbook.LibContents.WORLD
 import com.kej.wordbook.R
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityAddBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddBinding

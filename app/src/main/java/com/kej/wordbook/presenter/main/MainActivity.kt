@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,9 +17,10 @@ import com.kej.wordbook.presenter.add.AddActivity
 import com.kej.wordbook.data.database.AppDatabase
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
     private var selectedWord: Word? = null
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,16 +69,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun deleteData() {
         selectedWord?.let { inSelectedWord ->
-            Thread {
-                AppDatabase.getInstance(this)?.wordDao()?.delete(inSelectedWord)
-                runOnUiThread {
-                    wordAdapter.list.remove(inSelectedWord)
-                    wordAdapter.notifyDataSetChanged()
-                    setScreenWord(null)
-                    selectedWord = null
-                    Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
-                }
-            }.start()
+            viewModel.deleteData(inSelectedWord)
+            wordAdapter.list.remove(inSelectedWord)
+            wordAdapter.notifyDataSetChanged()
+            setScreenWord(null)
+            selectedWord = null
+            Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -91,22 +90,22 @@ class MainActivity : AppCompatActivity() {
             addItemDecoration(divider)
         }
 
-        Thread {
-            val list = AppDatabase.getInstance(this)?.wordDao()?.getAll() ?: emptyList()
-            wordAdapter.list = list as MutableList<Word>
-            wordAdapter.notifyDataSetChanged()
-        }.start()
+//        Thread {
+//            val list = AppDatabase.getInstance(this).wordDao().getAll()
+//            wordAdapter.list = list as MutableList<Word>
+//            wordAdapter.notifyDataSetChanged()
+//        }.start()
     }
 
     private fun updateAddWord() {
-        Thread {
-            AppDatabase.getInstance(this)?.wordDao()?.getLatestWord()?.let { word ->
-                wordAdapter.list.add(0, word)
-                runOnUiThread {
-                    wordAdapter.notifyDataSetChanged()
-                }
-            }
-        }.start()
+//        Thread {
+//            AppDatabase.getInstance(this).wordDao().getLatestWord().let { word ->
+//                wordAdapter.list.add(0, word)
+//                runOnUiThread {
+//                    wordAdapter.notifyDataSetChanged()
+//                }
+//            }
+//        }.start()
     }
 
     private fun updateEditWord(word: Word) {
@@ -119,13 +118,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setScreenWord(word: Word?){
+    private fun setScreenWord(word: Word?) {
         if (word == null) {
             binding.textTextView.text = ""
             binding.meanTextView.text = ""
             binding.typeTextView.text = ""
         } else {
-            binding.textTextView.text = word?.text
+            binding.textTextView.text = word.text
             binding.meanTextView.text = "뜻: ${word?.mean}"
             binding.typeTextView.text = "품사: ${word?.type}"
         }

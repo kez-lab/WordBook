@@ -1,9 +1,11 @@
-package com.kej.wordbook.domain
+package com.kej.wordbook.data
 
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.data.database.WordDao
+import com.kej.wordbook.domain.Repository
+import javax.inject.Inject
 
-class RepositoryImpl(val wordDao: WordDao) : Repository {
+class RepositoryImpl @Inject constructor(private val wordDao: WordDao) : Repository {
     override suspend fun getAll(): List<Word> {
         return wordDao.getAll()
     }
