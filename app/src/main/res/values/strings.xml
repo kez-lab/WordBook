@@ -9,4 +9,7 @@
     <string name="please_check_type">품사를 체크해주세요</string>
     <string name="delete_success">삭제가 완료되었습니다.</string>
     <string name="error">에러가 발생하였습니다.</string>
+    <string name="value">뜻: %s</string>
+    <string name="type">품사: %s</string>
+    <string name="noun">명사</string>
 </resources>

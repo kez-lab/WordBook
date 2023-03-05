@@ -3,10 +3,11 @@ package com.kej.wordbook.data
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.data.database.WordDao
 import com.kej.wordbook.domain.Repository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(private val wordDao: WordDao) : Repository {
-    override suspend fun getAll(): List<Word> {
+    override suspend fun getAll(): Flow<List<Word>> {
         return wordDao.getAll()
     }
 

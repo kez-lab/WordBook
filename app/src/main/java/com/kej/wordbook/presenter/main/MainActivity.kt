@@ -61,31 +61,40 @@ class MainActivity : AppCompatActivity() {
                         initViews()
                     }
                     is MainState.Delete -> {
-                        deleteHandling()
-                        wordAdapter.notifyDataSetChanged()
+                        deleteHandler()
                     }
                     is MainState.SuccessWordList -> {
-                        currentWordList.addAll(it.wordList)
-                        wordAdapter.submitList(currentWordList)
+                        successListHandler(it.wordList)
                     }
                     is MainState.SuccessLatestWord -> {
-                        currentWordList.add(0, it.lastWord)
-                        wordAdapter.submitList(currentWordList)
-                        wordAdapter.notifyDataSetChanged()
+                        successLatestWordHandler(it.lastWord)
                     }
                     is MainState.Error -> {
-                        Toast.makeText(this@MainActivity, "에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, getString(R.string.error), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
-    private fun deleteHandling() {
-        wordAdapter.notifyDataSetChanged()
+    private fun deleteHandler() {
+        viewModel.getAllList()
         setScreenWord(null)
         selectedWord = null
         Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun successLatestWordHandler(latestWord: Word) {
+        setScreenWord(latestWord)
+        wordAdapter.submitList(currentWordList)
+        wordAdapter.notifyDataSetChanged()
+    }
+
+    private fun successListHandler(wordList: List<Word>) {
+        currentWordList.clear()
+        currentWordList.addAll(wordList)
+        wordAdapter.submitList(currentWordList)
+        wordAdapter.notifyDataSetChanged()
     }
 
     private fun initViews() {
@@ -139,13 +148,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setScreenWord(word: Word?) {
         if (word == null) {
-            binding.textTextView.text = ""
-            binding.meanTextView.text = ""
-            binding.typeTextView.text = ""
+            binding.textTextView.text = getString(R.string.noun)
+            binding.meanTextView.text = getString(R.string.value, "")
+            binding.typeTextView.text = getString(R.string.type, "")
         } else {
             binding.textTextView.text = word.text
-            binding.meanTextView.text = "뜻: ${word?.mean}"
-            binding.typeTextView.text = "품사: ${word?.type}"
+            binding.meanTextView.text = getString(R.string.value, word.mean)
+            binding.typeTextView.text = getString(R.string.type, word.type)
         }
     }
 

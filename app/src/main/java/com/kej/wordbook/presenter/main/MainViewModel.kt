@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,9 +28,12 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun getAllList() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getAll()?.let {
-                _mainState.value = MainState.SuccessWordList(it)
+            repository.getAll().collectLatest { wordList ->
+                wordList?.let {
+                    _mainState.value = MainState.SuccessWordList(it)
+                }
             }
+
         }
     }
 
