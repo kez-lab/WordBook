@@ -5,7 +5,7 @@
 
 
 ## 앱 다운 링크
-[Google](https://play.google.com/store/apps/details?id=com.kej.wordbook)
+[Google Play](https://play.google.com/store/apps/details?id=com.kej.wordbook)
 
 ## 📚사용 기술 및 라이브러리
 
