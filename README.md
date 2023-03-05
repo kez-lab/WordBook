@@ -1,6 +1,4 @@
 # WordBook
-
-## 📖 상세 내용
 ![030517033957585](https://user-images.githubusercontent.com/93872496/222953825-7a7db4c3-7e97-40d5-a137-cd72c10bc20a.jpg)
 
 
