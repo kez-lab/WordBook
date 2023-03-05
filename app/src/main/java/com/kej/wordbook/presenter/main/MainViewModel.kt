@@ -1,16 +1,16 @@
 package com.kej.wordbook.presenter.main
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.lifecycle.repeatOnLifecycle
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun getAllList() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             repository.getAll().collectLatest { wordList ->
                 wordList?.let {
                     _mainState.value = MainState.SuccessWordList(it)

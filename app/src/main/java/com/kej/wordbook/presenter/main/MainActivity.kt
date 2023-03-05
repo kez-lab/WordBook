@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kej.wordbook.LibContents.EDIT_WORLD
@@ -54,23 +56,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun initObserve() {
         lifecycleScope.launch {
-            viewModel.mainState.collectLatest {
-                when (it) {
-                    is MainState.UnInitialized -> {
-                        initRecyclerView()
-                        initViews()
-                    }
-                    is MainState.Delete -> {
-                        deleteHandler()
-                    }
-                    is MainState.SuccessWordList -> {
-                        successListHandler(it.wordList)
-                    }
-                    is MainState.SuccessLatestWord -> {
-                        successLatestWordHandler(it.lastWord)
-                    }
-                    is MainState.Error -> {
-                        Toast.makeText(this@MainActivity, getString(R.string.error), Toast.LENGTH_SHORT).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mainState.collectLatest {
+                    when (it) {
+                        is MainState.UnInitialized -> {
+                            initRecyclerView()
+                            initViews()
+                        }
+                        is MainState.Delete -> {
+                            deleteHandler()
+                        }
+                        is MainState.SuccessWordList -> {
+                            successListHandler(it.wordList)
+                        }
+                        is MainState.SuccessLatestWord -> {
+                            successLatestWordHandler(it.lastWord)
+                        }
+                        is MainState.Error -> {
+                            Toast.makeText(this@MainActivity, getString(R.string.error), Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -123,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        wordAdapter = WordAdapter() { word ->
+        wordAdapter = WordAdapter { word ->
             selectedWord = word
             setScreenWord(word)
         }
