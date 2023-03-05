@@ -2,11 +2,25 @@ package com.kej.wordbook.presenter.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ItemWordBinding
 
-class WordAdapter(var list: MutableList<Word>, private val onClick: (Word) -> Unit): RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
+class WordAdapter(private val onClick: (Word) -> Unit): ListAdapter<Word, WordAdapter.WordViewHolder>(diffUtil) {
+    companion object {
+        val diffUtil = object: DiffUtil.ItemCallback<Word>() {
+            override fun areItemsTheSame(oldItem: Word, newItem: Word): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Word, newItem: Word): Boolean {
+                return oldItem.text == newItem.text
+            }
+
+        }
+    }
 
     inner class WordViewHolder(private val binding: ItemWordBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(word: Word){
@@ -28,8 +42,6 @@ class WordAdapter(var list: MutableList<Word>, private val onClick: (Word) -> Un
     }
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(currentList[position])
     }
-
-    override fun getItemCount(): Int = list.size
 }

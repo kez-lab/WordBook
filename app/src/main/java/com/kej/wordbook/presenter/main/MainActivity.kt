@@ -1,29 +1,34 @@
 package com.kej.wordbook.presenter.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
 import com.kej.wordbook.LibContents.WORLD
 import com.kej.wordbook.R
-import com.kej.wordbook.presenter.adapter.WordAdapter
-import com.kej.wordbook.presenter.add.AddActivity
-import com.kej.wordbook.data.database.AppDatabase
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityMainBinding
+import com.kej.wordbook.presenter.adapter.WordAdapter
+import com.kej.wordbook.presenter.add.AddActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@SuppressLint("NotifyDataSetChanged")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
     private var selectedWord: Word? = null
+    private val currentWordList = arrayListOf<Word>()
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -31,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val editWord = result.data?.getParcelableExtra<Word>(EDIT_WORLD)
         if (result.resultCode == RESULT_OK) {
             if (isUpdate) {
-                updateAddWord()
+                viewModel.getLatestWord()
             } else if (editWord != null) {
                 updateEditWord(editWord)
             }
@@ -44,8 +49,43 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initRecyclerView()
-        initViews()
+        initObserve()
+    }
+
+    private fun initObserve() {
+        lifecycleScope.launch {
+            viewModel.mainState.collectLatest {
+                when (it) {
+                    is MainState.UnInitialized -> {
+                        initRecyclerView()
+                        initViews()
+                    }
+                    is MainState.Delete -> {
+                        deleteHandling()
+                        wordAdapter.notifyDataSetChanged()
+                    }
+                    is MainState.SuccessWordList -> {
+                        currentWordList.addAll(it.wordList)
+                        wordAdapter.submitList(currentWordList)
+                    }
+                    is MainState.SuccessLatestWord -> {
+                        currentWordList.add(0, it.lastWord)
+                        wordAdapter.submitList(currentWordList)
+                        wordAdapter.notifyDataSetChanged()
+                    }
+                    is MainState.Error -> {
+                        Toast.makeText(this@MainActivity, "에러가 발생하였습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteHandling() {
+        wordAdapter.notifyDataSetChanged()
+        setScreenWord(null)
+        selectedWord = null
+        Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
     }
 
     private fun initViews() {
@@ -70,16 +110,11 @@ class MainActivity : AppCompatActivity() {
     private fun deleteData() {
         selectedWord?.let { inSelectedWord ->
             viewModel.deleteData(inSelectedWord)
-            wordAdapter.list.remove(inSelectedWord)
-            wordAdapter.notifyDataSetChanged()
-            setScreenWord(null)
-            selectedWord = null
-            Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun initRecyclerView() {
-        wordAdapter = WordAdapter(mutableListOf()) { word ->
+        wordAdapter = WordAdapter() { word ->
             selectedWord = word
             setScreenWord(word)
         }
@@ -89,33 +124,17 @@ class MainActivity : AppCompatActivity() {
             val divider = DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL)
             addItemDecoration(divider)
         }
-
-//        Thread {
-//            val list = AppDatabase.getInstance(this).wordDao().getAll()
-//            wordAdapter.list = list as MutableList<Word>
-//            wordAdapter.notifyDataSetChanged()
-//        }.start()
-    }
-
-    private fun updateAddWord() {
-//        Thread {
-//            AppDatabase.getInstance(this).wordDao().getLatestWord().let { word ->
-//                wordAdapter.list.add(0, word)
-//                runOnUiThread {
-//                    wordAdapter.notifyDataSetChanged()
-//                }
-//            }
-//        }.start()
+        viewModel.getAllList()
     }
 
     private fun updateEditWord(word: Word) {
-        val index = wordAdapter.list.indexOfFirst {
+        val index = wordAdapter.currentList.indexOfFirst {
             it.id == word.id
         }
         setScreenWord(word)
-        wordAdapter.list[index] = word
+        currentWordList[index] = word
+        wordAdapter.submitList(currentWordList)
         wordAdapter.notifyItemChanged(index)
-
     }
 
     private fun setScreenWord(word: Word?) {

@@ -1,23 +1,43 @@
 package com.kej.wordbook.presenter.main
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kej.wordbook.data.database.AppDatabase
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
+    private var _mainState = MutableStateFlow<MainState>(MainState.UnInitialized)
+    val mainState: StateFlow<MainState> get() = _mainState
+
+
     fun deleteData(inSelectedWord: Word) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(inSelectedWord)
+            _mainState.value = MainState.Delete
+        }
+    }
+
+    fun getAllList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAll()?.let {
+                _mainState.value = MainState.SuccessWordList(it)
+            }
+        }
+    }
+
+    fun getLatestWord() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getLatestWord()?.let {
+                _mainState.value = MainState.SuccessLatestWord(it)
+            }
         }
     }
 }
