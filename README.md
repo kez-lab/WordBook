@@ -1,8 +1,8 @@
 # WordBook
 
 ## 📖 상세 내용
+![030517033957585](https://user-images.githubusercontent.com/93872496/222953825-7a7db4c3-7e97-40d5-a137-cd72c10bc20a.jpg)
 
-![030517033957585.jpg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/52d7f233-9acf-4763-8cd7-74d753c80a85/030517033957585.jpg)
 
 ## 앱 다운 링크
 [Google](https://play.google.com/store/apps/details?id=com.kej.wordbook)
