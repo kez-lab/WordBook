@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.lifecycle.repeatOnLifecycle
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
@@ -33,7 +32,6 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
                     _mainState.value = MainState.SuccessWordList(it)
                 }
             }
-
         }
     }
 

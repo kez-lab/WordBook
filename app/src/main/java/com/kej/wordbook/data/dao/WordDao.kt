@@ -1,4 +1,4 @@
-package com.kej.wordbook.data.database
+package com.kej.wordbook.data.dao
 
 import androidx.room.*
 import com.kej.wordbook.data.model.Word

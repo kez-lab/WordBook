@@ -60,8 +60,9 @@ class MainActivity : AppCompatActivity() {
                 viewModel.mainState.collectLatest {
                     when (it) {
                         is MainState.UnInitialized -> {
-                            initRecyclerView()
                             initViews()
+                            initRecyclerView()
+                            initData()
                         }
                         is MainState.Delete -> {
                             deleteHandler()
@@ -79,26 +80,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun deleteHandler() {
-        viewModel.getAllList()
-        setScreenWord(null)
-        selectedWord = null
-        Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun successLatestWordHandler(latestWord: Word) {
-        setScreenWord(latestWord)
-        wordAdapter.submitList(currentWordList)
-        wordAdapter.notifyDataSetChanged()
-    }
-
-    private fun successListHandler(wordList: List<Word>) {
-        currentWordList.clear()
-        currentWordList.addAll(wordList)
-        wordAdapter.submitList(currentWordList)
-        wordAdapter.notifyDataSetChanged()
     }
 
     private fun initViews() {
@@ -120,12 +101,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteData() {
-        selectedWord?.let { inSelectedWord ->
-            viewModel.deleteData(inSelectedWord)
-        }
-    }
-
     private fun initRecyclerView() {
         wordAdapter = WordAdapter { word ->
             selectedWord = word
@@ -137,17 +112,39 @@ class MainActivity : AppCompatActivity() {
             val divider = DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL)
             addItemDecoration(divider)
         }
+    }
+
+    private fun initData() {
         viewModel.getAllList()
     }
 
-    private fun updateEditWord(word: Word) {
-        val index = wordAdapter.currentList.indexOfFirst {
-            it.id == word.id
-        }
-        setScreenWord(word)
-        currentWordList[index] = word
+    private fun deleteHandler() {
+        setScreenWord(null)
+        selectedWord = null
+        Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun successLatestWordHandler(latestWord: Word) {
+        setScreenWord(latestWord)
         wordAdapter.submitList(currentWordList)
-        wordAdapter.notifyItemChanged(index)
+        wordAdapter.notifyDataSetChanged()
+    }
+
+    private fun successListHandler(wordList: List<Word>) {
+        currentWordList.clear()
+        currentWordList.addAll(wordList)
+        wordAdapter.submitList(currentWordList)
+        wordAdapter.notifyDataSetChanged()
+    }
+
+    private fun deleteData() {
+        selectedWord?.let { inSelectedWord ->
+            viewModel.deleteData(inSelectedWord)
+        }
+    }
+
+    private fun updateEditWord(word: Word) {
+        setScreenWord(word)
     }
 
     private fun setScreenWord(word: Word?) {

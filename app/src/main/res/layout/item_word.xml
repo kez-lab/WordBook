@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24dp"
-        tools:text ="단어"
+        tools:text ="@string/word"
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18dp"
-        tools:text ="뜻"
+        tools:text ="@string/mean"
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="@id/textTextView"
         app:layout_constraintTop_toBottomOf="@id/textTextView" />

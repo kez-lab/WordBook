@@ -3,7 +3,7 @@ package com.kej.wordbook.di
 import android.content.Context
 import androidx.room.Room
 import com.kej.wordbook.data.database.AppDatabase
-import com.kej.wordbook.data.database.WordDao
+import com.kej.wordbook.data.dao.WordDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataBaseModule {
+class DataModule {
     @Provides
     @Singleton
     fun getInstance(@ApplicationContext context: Context): AppDatabase {

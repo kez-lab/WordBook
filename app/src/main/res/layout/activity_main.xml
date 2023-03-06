@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="단어" />
+        android:text="@string/word" />
 
     <TextView
         android:id="@+id/meanTextView"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="@+id/textTextView"
         app:layout_constraintStart_toStartOf="@+id/textTextView"
         app:layout_constraintTop_toBottomOf="@+id/textTextView"
-        android:text="뜻" />
+        android:text="@string/mean" />
 
     <TextView
         android:id="@+id/typeTextView"
@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="@+id/meanTextView"
         app:layout_constraintStart_toStartOf="@+id/meanTextView"
         app:layout_constraintTop_toBottomOf="@+id/meanTextView"
-        android:text="품사" />
+        android:text="@string/type" />
 
     <View
         android:id="@+id/line"
