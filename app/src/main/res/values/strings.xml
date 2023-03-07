@@ -11,8 +11,10 @@
     <string name="error">에러가 발생하였습니다.</string>
     <string name="value">뜻: %s</string>
     <string name="type">품사: %s</string>
+    <string name="type_init">품사</string>
     <string name="noun">명사</string>
     <string name="add_word">단어추가</string>
     <string name="word">단어</string>
     <string name="mean">뜻</string>
+    <string name="input_second_up">2자 이상을 입력해주세요</string>
 </resources>
