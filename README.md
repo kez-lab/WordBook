@@ -25,8 +25,8 @@
     - 반면에 콜드 스트림(`Cold Stream`)은 데이터 생성과 함께 활성화되지 않으며, 구독자가 있을 때만 활성화된다. (Flow)
 - StateFlow와 LiveData 의 차이점에 대해 학습
     - 안드로이드 플랫폼에 종속적이었던 `LiveData` 와는 달리, `StateFlow` 는 순수 kotlin 라이브러리이기 때문에 `Domain Layer` 에서 사용할 수 있다.
-    - `StateFlow`의 경우 초기 상태를 생성자에 전달해야 하지만 `LiveData`의 경우는 전달하지 않는다.
-    → 즉 Nullable하기에 오히려 NullSafe한 코드를 구축할 수 있다.
+    - `StateFlow의 경우 초기 상태를 생성자에 전달하고, 코틀린 언어의 널 안전성(null-safety) 기능을 활용하여 데이터를 처리한다.
+    → 즉 NullSafe한 코드를 구축할 수 있다.
 <br><br>
 
 ## 🔔 추가적인 목표
