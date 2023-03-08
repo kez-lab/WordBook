@@ -9,21 +9,27 @@ import com.kej.wordbook.data.database.AppDatabase
 import com.kej.wordbook.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
+    private val _addStateFlow = MutableStateFlow<AddState>(AddState.UnInitialized)
+    val addStateFlow:StateFlow<AddState> get() = _addStateFlow
     fun insertData(word: Word) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.insert(word)
+            _addStateFlow.value = AddState.InsertSuccess
         }
     }
 
     fun updateData(word: Word) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.update(word)
+            _addStateFlow.value = AddState.UpdateSuccess(word)
         }
     }
 

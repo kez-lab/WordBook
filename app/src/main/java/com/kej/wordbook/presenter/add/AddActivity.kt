@@ -9,6 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
 import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
@@ -17,6 +20,8 @@ import com.kej.wordbook.R
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint class AddActivity : AppCompatActivity() {
 
@@ -29,9 +34,39 @@ import dagger.hilt.android.AndroidEntryPoint
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getIntentData()
-        initViews()
-        initChipGroup()
+        initObserve()
+    }
+
+    private fun initObserve() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addStateFlow.collectLatest {
+                    when (it) {
+                        is AddState.UnInitialized -> {
+                            getIntentData()
+                            initViews()
+                            initChipGroup()
+                        }
+
+                        is AddState.InsertSuccess -> {
+                            val intent = Intent().putExtra(IS_UPDATE, true)
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+
+                        is AddState.UpdateSuccess -> {
+                            val intent = Intent().putExtra(EDIT_WORLD, it.word)
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+                        else -> {
+                            errorToast()
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     private fun initChipGroup() {
@@ -100,16 +135,11 @@ import dagger.hilt.android.AndroidEntryPoint
         if (!isEdit) {
             val word = Word(text, mean, type)
             viewModel.insertData(word)
-            val intent = Intent().putExtra(IS_UPDATE, true)
-            setResult(RESULT_OK, intent)
-            finish()
+
         } else {
             editWord?.id?.let { Word(text, mean, type, it) }?.let { word ->
                 viewModel.updateData(word)
-                val intent = Intent().putExtra(EDIT_WORLD, word)
-                setResult(RESULT_OK, intent)
-                finish()
-            } ?: Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
+            } ?: errorToast()
         }
     }
 
@@ -139,5 +169,9 @@ import dagger.hilt.android.AndroidEntryPoint
             isCheckable = true
             isClickable = true
         }
+    }
+
+    private fun errorToast() {
+        Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
     }
 }
