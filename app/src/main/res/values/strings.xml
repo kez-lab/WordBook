@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WordBook</string>
+    <string name="wordBook">단어장</string>
     <string name="edit">수정</string>
     <string name="add">추가</string>
     <string name="save_success">저장이 완료되었습니다.</string>

@@ -2,11 +2,14 @@ package com.kej.wordbook.presenter.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -35,14 +38,17 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val isUpdate = result.data?.getBooleanExtra(IS_UPDATE, false) ?: false
-        val editWord = result.data?.getParcelableExtra<Word>(EDIT_WORLD)
+        val editWord = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            result.data?.getParcelableExtra(EDIT_WORLD, Word::class.java)
+        } else {
+            result.data?.getParcelableExtra(EDIT_WORLD)
+        }
         if (result.resultCode == RESULT_OK) {
             if (isUpdate) {
                 viewModel.getLatestWord()
             } else if (editWord != null) {
                 updateEditWord(editWord)
             }
-
         }
     }
     private val viewModel: MainViewModel by viewModels()
@@ -62,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                         is MainState.UnInitialized -> {
                             initViews()
                             initRecyclerView()
+                            initStatusBar()
                             initData()
                         }
                         is MainState.Delete -> {
@@ -114,6 +121,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun initStatusBar() {
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = true
+        window?.statusBarColor = ContextCompat.getColor(this, R.color.white)
+    }
+
     private fun initData() {
         viewModel.getAllList()
     }
@@ -126,15 +138,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun successLatestWordHandler(latestWord: Word) {
         setScreenWord(latestWord)
-        wordAdapter.submitList(currentWordList)
-        wordAdapter.notifyDataSetChanged()
+        with(wordAdapter) {
+            submitList(currentWordList)
+            notifyDataSetChanged()
+        }
     }
 
     private fun successListHandler(wordList: List<Word>) {
-        currentWordList.clear()
-        currentWordList.addAll(wordList)
-        wordAdapter.submitList(currentWordList)
-        wordAdapter.notifyDataSetChanged()
+        with(currentWordList) {
+            clear()
+            addAll(wordList)
+        }
+        with(wordAdapter) {
+            submitList(currentWordList)
+            notifyDataSetChanged()
+        }
     }
 
     private fun deleteData() {
@@ -148,15 +166,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setScreenWord(word: Word?) {
-        if (word == null) {
-            binding.textTextView.text = getString(R.string.noun)
-            binding.meanTextView.text = getString(R.string.value, "")
-            binding.typeTextView.text = getString(R.string.type, "")
-        } else {
-            binding.textTextView.text = word.text
-            binding.meanTextView.text = getString(R.string.value, word.mean)
-            binding.typeTextView.text = getString(R.string.type, word.type)
+        with(binding) {
+            if (word == null) {
+                textTextView.text = getString(R.string.noun)
+                meanTextView.text = getString(R.string.value, "")
+                typeTextView.text = getString(R.string.type, "")
+            } else {
+                textTextView.text = word.text
+                meanTextView.text = getString(R.string.value, word.mean)
+                typeTextView.text = getString(R.string.type, word.type)
+            }
         }
     }
-
 }
