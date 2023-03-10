@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.domain.Repository
+import com.kej.wordbook.domain.model.WordModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -18,7 +19,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     val mainState: StateFlow<MainState> get() = _mainState
 
 
-    fun deleteData(inSelectedWord: Word) {
+    fun deleteData(inSelectedWord: WordModel) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(inSelectedWord)
             _mainState.value = MainState.Delete
@@ -28,16 +29,15 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     fun getAllList() {
         viewModelScope.launch {
             repository.getAll().collectLatest { wordList ->
-                wordList?.let {
-                    _mainState.value = MainState.SuccessWordList(it)
-                }
+                _mainState.value = MainState.SuccessWordList(wordList)
+
             }
         }
     }
 
     fun getLatestWord() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getLatestWord()?.let {
+            repository.getLatestWord().let {
                 _mainState.value = MainState.SuccessLatestWord(it)
             }
         }

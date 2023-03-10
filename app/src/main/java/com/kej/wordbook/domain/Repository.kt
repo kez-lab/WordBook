@@ -1,18 +1,18 @@
 package com.kej.wordbook.domain
 
-import com.kej.wordbook.data.model.Word
+import com.kej.wordbook.domain.model.WordModel
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    suspend fun getAll(): Flow<List<Word>?>
+    suspend fun getAll(): Flow<List<WordModel>>
 
-    suspend fun getLatestWord(): Word?
+    suspend fun getLatestWord(): WordModel
 
-    suspend fun insert(word: Word)
+    suspend fun insert(word: WordModel)
 
-    suspend fun delete(word: Word)
+    suspend fun delete(word: WordModel)
 
-    suspend fun update(word: Word)
+    suspend fun update(word: WordModel)
 
 }

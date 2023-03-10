@@ -19,8 +19,8 @@ import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
 import com.kej.wordbook.LibContents.WORLD
 import com.kej.wordbook.R
-import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityMainBinding
+import com.kej.wordbook.domain.model.WordModel
 import com.kej.wordbook.presenter.adapter.WordAdapter
 import com.kej.wordbook.presenter.add.AddActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,14 +32,14 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
-    private var selectedWord: Word? = null
-    private val currentWordList = arrayListOf<Word>()
+    private var selectedWord: WordModel? = null
+    private val currentWordList = arrayListOf<WordModel>()
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         val isUpdate = result.data?.getBooleanExtra(IS_UPDATE, false) ?: false
         val editWord = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            result.data?.getParcelableExtra(EDIT_WORLD, Word::class.java)
+            result.data?.getParcelableExtra(EDIT_WORLD, WordModel::class.java)
         } else {
             result.data?.getParcelableExtra(EDIT_WORLD)
         }
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
     }
 
-    private fun successLatestWordHandler(latestWord: Word) {
+    private fun successLatestWordHandler(latestWord: WordModel) {
         setScreenWord(latestWord)
         with(wordAdapter) {
             submitList(currentWordList)
@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun successListHandler(wordList: List<Word>) {
+    private fun successListHandler(wordList: List<WordModel>) {
         with(currentWordList) {
             clear()
             addAll(wordList)
@@ -161,11 +161,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateEditWord(word: Word) {
+    private fun updateEditWord(word: WordModel) {
         setScreenWord(word)
     }
 
-    private fun setScreenWord(word: Word?) {
+    private fun setScreenWord(word: WordModel?) {
         with(binding) {
             if (word == null) {
                 textTextView.text = getString(R.string.noun)

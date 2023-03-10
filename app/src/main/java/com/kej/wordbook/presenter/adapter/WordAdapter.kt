@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ItemWordBinding
+import com.kej.wordbook.domain.model.WordModel
 
-class WordAdapter(private val onClick: (Word) -> Unit): ListAdapter<Word, WordAdapter.WordViewHolder>(diffUtil) {
+class WordAdapter(private val onClick: (WordModel) -> Unit): ListAdapter<WordModel, WordAdapter.WordViewHolder>(diffUtil) {
     companion object {
-        val diffUtil = object: DiffUtil.ItemCallback<Word>() {
-            override fun areItemsTheSame(oldItem: Word, newItem: Word): Boolean {
+        val diffUtil = object: DiffUtil.ItemCallback<WordModel>() {
+            override fun areItemsTheSame(oldItem: WordModel, newItem: WordModel): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Word, newItem: Word): Boolean {
+            override fun areContentsTheSame(oldItem: WordModel, newItem: WordModel): Boolean {
                 return oldItem.text == newItem.text
             }
 
@@ -23,7 +23,7 @@ class WordAdapter(private val onClick: (Word) -> Unit): ListAdapter<Word, WordAd
     }
 
     inner class WordViewHolder(private val binding: ItemWordBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(word: Word){
+        fun bind(word: WordModel){
             binding.apply {
                 textTextView.text = word.text
                 meanTextTextView.text = word.mean

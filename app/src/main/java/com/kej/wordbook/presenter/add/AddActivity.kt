@@ -19,6 +19,7 @@ import com.kej.wordbook.LibContents.WORLD
 import com.kej.wordbook.R
 import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.databinding.ActivityAddBinding
+import com.kej.wordbook.domain.model.WordModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint class AddActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddBinding
-    private var editWord: Word? = null
+    private var editWord: WordModel? = null
     private var isEdit = false
     private val viewModel by viewModels<AddViewModel>()
 
@@ -43,9 +44,9 @@ import kotlinx.coroutines.launch
                 viewModel.addStateFlow.collectLatest {
                     when (it) {
                         is AddState.UnInitialized -> {
-                            getIntentData()
                             initViews()
                             initChipGroup()
+                            getIntentData()
                         }
 
                         is AddState.InsertSuccess -> {
@@ -111,7 +112,7 @@ import kotlinx.coroutines.launch
     }
 
     private fun getIntentData() {
-        val word = intent.getParcelableExtra<Word>(WORLD)
+        val word = intent.getParcelableExtra<WordModel>(WORLD)
         word?.let { inWord ->
             editWord = inWord
             isEdit = true
