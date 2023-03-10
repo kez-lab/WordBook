@@ -1,9 +1,7 @@
 package com.kej.wordbook.presenter.main
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.domain.Repository
 import com.kej.wordbook.domain.model.WordModel
 import dagger.hilt.android.lifecycle.HiltViewModel

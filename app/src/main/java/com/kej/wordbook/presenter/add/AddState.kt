@@ -1,6 +1,5 @@
 package com.kej.wordbook.presenter.add
 
-import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.domain.model.WordModel
 
 sealed class AddState {
