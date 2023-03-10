@@ -27,10 +27,9 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     }
 
     fun getAllList() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getAll().collectLatest { wordList ->
                 _mainState.value = MainState.SuccessWordList(wordList)
-
             }
         }
     }
