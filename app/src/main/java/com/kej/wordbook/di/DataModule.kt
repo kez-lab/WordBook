@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class DataModule {
     @Provides
     @Singleton
-    fun getInstance(@ApplicationContext context: Context): AppDatabase {
+    fun provideAppDataBase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
