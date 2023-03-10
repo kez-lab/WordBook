@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kej.wordbook.LibContents.EDIT_WORLD
@@ -24,6 +25,8 @@ import com.kej.wordbook.domain.model.WordModel
 import com.kej.wordbook.presenter.adapter.WordAdapter
 import com.kej.wordbook.presenter.add.AddActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -32,8 +35,8 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
+    private lateinit var currentWordList: PagingData<WordModel>
     private var selectedWord: WordModel? = null
-    private val currentWordList = arrayListOf<WordModel>()
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -136,22 +139,25 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
     }
 
-    private fun successLatestWordHandler(latestWord: WordModel) {
+    private suspend fun successLatestWordHandler(latestWord: WordModel) {
         setScreenWord(latestWord)
         with(wordAdapter) {
-            submitList(currentWordList)
+            submitData(currentWordList)
             notifyDataSetChanged()
         }
     }
 
-    private fun successListHandler(wordList: List<WordModel>) {
-        with(currentWordList) {
-            clear()
-            addAll(wordList)
-        }
-        with(wordAdapter) {
-            submitList(currentWordList)
-            notifyDataSetChanged()
+    private fun successListHandler(wordList: Flow<PagingData<WordModel>>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                wordList.collectLatest {
+                    currentWordList = it
+                    with(wordAdapter) {
+                        submitData(currentWordList)
+                        notifyDataSetChanged()
+                    }
+                }
+            }
         }
     }
 

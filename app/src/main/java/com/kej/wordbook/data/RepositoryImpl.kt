@@ -1,17 +1,24 @@
 package com.kej.wordbook.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.kej.wordbook.data.dao.WordDao
+import com.kej.wordbook.data.model.Word
 import com.kej.wordbook.data.model.toWord
 import com.kej.wordbook.data.model.toWordModel
+import com.kej.wordbook.data.paging.WordPagingSource
 import com.kej.wordbook.domain.Repository
 import com.kej.wordbook.domain.model.WordModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor(private val wordDao: WordDao) : Repository {
-    override suspend fun getAll(): Flow<List<WordModel>> {
-        return wordDao.getAll().map { wordList-> wordList.map { it.toWordModel() } }
+class RepositoryImpl @Inject constructor(private val wordDao: WordDao, private val wordPagingSource: WordPagingSource) : Repository {
+    override suspend fun getAll(): Flow<PagingData<WordModel>> {
+        return Pager(
+            config = PagingConfig(15, enablePlaceholders = false),
+            pagingSourceFactory = { wordPagingSource }
+        ).flow
     }
 
     override suspend fun getLatestWord(): WordModel {

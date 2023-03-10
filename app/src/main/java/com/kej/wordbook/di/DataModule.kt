@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.kej.wordbook.data.database.AppDatabase
 import com.kej.wordbook.data.dao.WordDao
+import com.kej.wordbook.data.paging.WordPagingSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +26,14 @@ class DataModule {
     }
 
     @Provides
+    @Singleton
     fun provideUserDao(database: AppDatabase): WordDao {
         return database.wordDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWordPagingSource(wordDao: WordDao):WordPagingSource {
+        return WordPagingSource(wordDao)
     }
 }

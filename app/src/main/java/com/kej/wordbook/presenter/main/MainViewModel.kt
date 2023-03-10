@@ -1,7 +1,9 @@
 package com.kej.wordbook.presenter.main
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.kej.wordbook.domain.Repository
 import com.kej.wordbook.domain.model.WordModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +28,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun getAllList() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getAll().collectLatest { wordList ->
+            repository.getAll().let { wordList ->
                 _mainState.value = MainState.SuccessWordList(wordList)
             }
         }
