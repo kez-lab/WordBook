@@ -115,9 +115,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setListSortType(type:String) {
+    private fun setListSortType(type: String) {
         wordAdapter.run {
-            submitList(currentWordList.filter { it.type == type})
+            submitList(currentWordList.filter { it.type == type })
             wordAdapter.notifyDataSetChanged()
         }
         binding.sortTextView.text = type
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDialog() {
         val typeArray = resources.getStringArray(R.array.chip_group)
         AlertDialog.Builder(this)
-            .setTitle("품사를 고르세요")
+            .setTitle(getString(R.string.type_pick))
             .setItems(typeArray) { dialog, position ->
                 setListSortType(typeArray[position])
                 dialog.dismiss()

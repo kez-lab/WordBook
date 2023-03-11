@@ -19,4 +19,5 @@
     <string name="mean">뜻</string>
     <string name="input_second_up">2자 이상을 입력해주세요</string>
     <string name="typeSort">품사 종류</string>
+    <string name="type_pick">품사를 고르세요</string>
 </resources>
