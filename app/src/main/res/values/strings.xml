@@ -18,4 +18,5 @@
     <string name="word">단어</string>
     <string name="mean">뜻</string>
     <string name="input_second_up">2자 이상을 입력해주세요</string>
+    <string name="typeSort">품사 종류</string>
 </resources>

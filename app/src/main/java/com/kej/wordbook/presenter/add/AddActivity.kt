@@ -1,17 +1,17 @@
 package com.kej.wordbook.presenter.add
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.children
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
 import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
@@ -40,34 +40,32 @@ import kotlinx.coroutines.launch
 
     private fun initObserve() {
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.addStateFlow.collectLatest {
-                    when (it) {
-                        is AddState.UnInitialized -> {
-                            initViews()
-                            initChipGroup()
-                            getIntentData()
-                        }
+            viewModel.addStateFlow.collectLatest {
+                when (it) {
+                    is AddState.UnInitialized -> {
+                        initViews()
+                        initChipGroup()
+                        getIntentData()
+                    }
 
-                        is AddState.InsertSuccess -> {
-                            val intent = Intent().putExtra(IS_UPDATE, true)
-                            setResult(RESULT_OK, intent)
-                            finish()
-                        }
+                    is AddState.InsertSuccess -> {
+                        val intent = Intent().putExtra(IS_UPDATE, true)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
 
-                        is AddState.UpdateSuccess -> {
-                            val intent = Intent().putExtra(EDIT_WORLD, it.word)
-                            setResult(RESULT_OK, intent)
-                            finish()
-                        }
-                        else -> {
-                            errorToast()
-                        }
+                    is AddState.UpdateSuccess -> {
+                        val intent = Intent().putExtra(EDIT_WORLD, it.word)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
+                    else -> {
+                        errorToast()
                     }
                 }
             }
-        }
 
+        }
     }
 
     private fun initChipGroup() {

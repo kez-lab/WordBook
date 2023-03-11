@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -66,8 +67,8 @@ class MainActivity : AppCompatActivity() {
                 viewModel.mainState.collectLatest {
                     when (it) {
                         is MainState.UnInitialized -> {
-                            initViews()
                             initRecyclerView()
+                            initViews()
                             initStatusBar()
                             initData()
                         }
@@ -106,6 +107,20 @@ class MainActivity : AppCompatActivity() {
                 updateAddWordResult.launch(intent)
             }
         }
+        binding.sortImageView.setOnClickListener {
+            showDialog()
+        }
+        binding.sortTextView.setOnClickListener {
+            showDialog()
+        }
+    }
+
+    private fun setListSortType(type:String) {
+        wordAdapter.run {
+            submitList(currentWordList.filter { it.type == type})
+            wordAdapter.notifyDataSetChanged()
+        }
+        binding.sortTextView.text = type
     }
 
     private fun initRecyclerView() {
@@ -177,5 +192,16 @@ class MainActivity : AppCompatActivity() {
                 typeTextView.text = getString(R.string.type, word.type)
             }
         }
+    }
+
+    private fun showDialog() {
+        val typeArray = resources.getStringArray(R.array.chip_group)
+        AlertDialog.Builder(this)
+            .setTitle("품사를 고르세요")
+            .setItems(typeArray) { dialog, position ->
+                setListSortType(typeArray[position])
+                dialog.dismiss()
+            }.create()
+            .show()
     }
 }
