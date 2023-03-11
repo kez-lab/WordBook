@@ -21,22 +21,25 @@ import com.kej.wordbook.LibContents.EDIT_WORLD
 import com.kej.wordbook.LibContents.IS_UPDATE
 import com.kej.wordbook.LibContents.WORLD
 import com.kej.wordbook.R
+import com.kej.wordbook.data.RepositoryImpl
 import com.kej.wordbook.databinding.ActivityMainBinding
+import com.kej.wordbook.domain.Repository
 import com.kej.wordbook.domain.model.WordModel
 import com.kej.wordbook.presenter.adapter.WordAdapter
 import com.kej.wordbook.presenter.add.AddActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-@SuppressLint("NotifyDataSetChanged")
-@AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+@SuppressLint("NotifyDataSetChanged") @AndroidEntryPoint class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
     private lateinit var currentWordList: PagingData<WordModel>
+    @Inject lateinit var repository: Repository
     private var selectedWord: WordModel? = null
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -137,15 +140,13 @@ class MainActivity : AppCompatActivity() {
     private fun deleteHandler() {
         setScreenWord(null)
         selectedWord = null
+        viewModel.getAllList()
         Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show()
     }
 
-    private suspend fun successLatestWordHandler(latestWord: WordModel) {
+    private fun successLatestWordHandler(latestWord: WordModel) {
         setScreenWord(latestWord)
-        with(wordAdapter) {
-            submitData(currentWordList)
-            notifyDataSetChanged()
-        }
+        viewModel.getAllList()
     }
 
     private suspend fun successListHandler(wordList: PagingData<WordModel>) {
@@ -164,6 +165,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateEditWord(word: WordModel) {
         setScreenWord(word)
+        viewModel.getAllList()
     }
 
     private fun setScreenWord(word: WordModel?) {

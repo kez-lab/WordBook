@@ -16,7 +16,7 @@ import javax.inject.Inject
 class RepositoryImpl @Inject constructor(private val wordDao: WordDao, private val wordPagingSource: WordPagingSource) : Repository {
     override suspend fun getAll(): Flow<PagingData<WordModel>> {
         return Pager(
-            config = PagingConfig(15, enablePlaceholders = false),
+            config = PagingConfig(5, enablePlaceholders = false),
             pagingSourceFactory = { wordPagingSource }
         ).flow
     }

@@ -18,8 +18,8 @@ class WordPagingSource @Inject constructor(private val wordDao: WordDao) : Pagin
             val result: List<WordModel> = wordDao.getAll().map { wordList ->
                 wordList.toWordModel()
             }
-            val prevKey = if (currentPage > 0) currentPage - 1 else null
-            val nextKey = if (result.size == params.loadSize) currentPage + 1 else null
+            val prevKey = if (currentPage == result.size) 1 else currentPage - 1
+            val nextKey = if (result.size < 7) 1 else currentPage + 1
             LoadResult.Page(
                 data = result, nextKey = prevKey, prevKey = nextKey
             )
