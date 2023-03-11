@@ -10,4 +10,16 @@
         <item>전치사</item>
         <item>접속사</item>
     </string-array>
+
+    <string-array name="type_group">
+        <item>전체</item>
+        <item>명사</item>
+        <item>동사</item>
+        <item>대명사</item>
+        <item>형용사</item>
+        <item>부사</item>
+        <item>감탄사</item>
+        <item>전치사</item>
+        <item>접속사</item>
+    </string-array>
 </resources>

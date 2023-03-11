@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordAdapter: WordAdapter
     private var selectedWord: WordModel? = null
+    private var currentType: String? = null
     private val currentWordList = arrayListOf<WordModel>()
     private val updateAddWordResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -115,9 +116,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setListSortType(type: String) {
+    private fun setListSortType(type: String?) {
         wordAdapter.run {
-            submitList(currentWordList.filter { it.type == type })
+            submitList(
+                if (type != null) {
+                    currentWordList.filter { it.type == type }
+                } else {
+                    currentWordList
+                }
+            )
             wordAdapter.notifyDataSetChanged()
         }
         binding.sortTextView.text = type
@@ -153,19 +160,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun successLatestWordHandler(latestWord: WordModel) {
         setScreenWord(latestWord)
-        with(wordAdapter) {
-            submitList(currentWordList)
-            notifyDataSetChanged()
-        }
     }
 
     private fun successListHandler(wordList: List<WordModel>) {
-        with(currentWordList) {
+        currentWordList.apply {
             clear()
             addAll(wordList)
         }
         with(wordAdapter) {
-            submitList(currentWordList)
+            submitList(
+                if (currentType != null) {
+                    currentWordList.filter { it.type == currentType }
+                } else {
+                    currentWordList
+                }
+            )
             notifyDataSetChanged()
         }
     }
@@ -195,11 +204,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDialog() {
-        val typeArray = resources.getStringArray(R.array.chip_group)
+        val typeArray = resources.getStringArray(R.array.type_group)
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.type_pick))
             .setItems(typeArray) { dialog, position ->
-                setListSortType(typeArray[position])
+                val selectType = if (position == 0) {
+                    null
+                } else {
+                    typeArray[position]
+                }
+                setListSortType(selectType)
+                currentType = selectType
                 dialog.dismiss()
             }.create()
             .show()
