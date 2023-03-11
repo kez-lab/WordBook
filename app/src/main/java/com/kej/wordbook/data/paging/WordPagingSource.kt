@@ -26,6 +26,5 @@ class WordPagingSource @Inject constructor(private val wordDao: WordDao) : Pagin
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
-
     }
 }

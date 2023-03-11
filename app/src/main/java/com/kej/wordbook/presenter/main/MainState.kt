@@ -8,7 +8,7 @@ sealed class MainState {
     object UnInitialized : MainState()
 
     data class SuccessWordList(
-        val wordList: Flow<PagingData<WordModel>>
+        val wordList: PagingData<WordModel>
     ) : MainState()
 
     data class SuccessLatestWord(

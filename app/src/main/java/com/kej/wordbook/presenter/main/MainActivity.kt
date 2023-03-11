@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kej.wordbook.LibContents.EDIT_WORLD
@@ -26,9 +27,9 @@ import com.kej.wordbook.presenter.adapter.WordAdapter
 import com.kej.wordbook.presenter.add.AddActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("NotifyDataSetChanged")
 @AndroidEntryPoint
@@ -147,17 +148,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun successListHandler(wordList: Flow<PagingData<WordModel>>) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                wordList.collectLatest {
-                    currentWordList = it
-                    with(wordAdapter) {
-                        submitData(currentWordList)
-                        notifyDataSetChanged()
-                    }
-                }
-            }
+    private suspend fun successListHandler(wordList: PagingData<WordModel>) {
+        currentWordList = wordList
+        with(wordAdapter) {
+            submitData(currentWordList)
+            notifyDataSetChanged()
         }
     }
 
