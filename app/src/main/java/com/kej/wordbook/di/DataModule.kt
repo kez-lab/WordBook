@@ -25,6 +25,7 @@ class DataModule {
     }
 
     @Provides
+    @Singleton
     fun provideUserDao(database: AppDatabase): WordDao {
         return database.wordDao()
     }
