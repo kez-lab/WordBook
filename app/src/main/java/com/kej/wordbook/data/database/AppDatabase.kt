@@ -8,5 +8,4 @@ import com.kej.wordbook.data.model.Word
 @Database(entities = [Word::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
-
 }
